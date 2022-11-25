@@ -16,7 +16,7 @@ include_directories(${THIRD_PARTY_LIBRARY_PATH}/imgui)
 
 aux_source_directory(. PROJECT_SRC)
 
-set(PROJECT_HDR ./shading_tutorial.h)
+set(PROJECT_HDR ./Scene.h)
 
 set(BASE_HDR ../base/application.h
              ../base/frame_rate_indicator.h
