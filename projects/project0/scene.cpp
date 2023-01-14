@@ -32,12 +32,6 @@ Scene::Scene(const Options& options) : Application(options) {
 	_spotLight->transform.position = glm::vec3(0.0f, 0.0f, 5.0f);
 	_spotLight->transform.rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	// set input mode
-	glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	_input.mouse.move.xNow = _input.mouse.move.xOld = 0.5f * _windowWidth;
-	_input.mouse.move.yNow = _input.mouse.move.yOld = 0.5f * _windowHeight;
-	glfwSetCursorPos(_window, _input.mouse.move.xNow, _input.mouse.move.yNow);
-
 	// init camera
 	_camera.reset(new PerspectiveCamera(glm::radians(50.0f), 1.0f * _windowWidth / _windowHeight, 0.1f, 10000.0f));
 	_camera->transform.position.z = 10.0f;
@@ -178,63 +172,81 @@ void Scene::handleInput() {
 		glfwSetWindowShouldClose(_window, true);
 		return ;
 	}
-
-	glm::vec3 cameraFront = _camera->transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 cameraRight = _camera->transform.rotation * glm::vec3(1.0f, 0.0f, 0.0f);
-
-	if (_input.keyboard.keyStates[GLFW_KEY_W] != GLFW_RELEASE) {
-		std::cout << "W" << std::endl;
-		// move the camera in its front direction
-		_camera->transform.position += cameraFront * cameraMoveSpeed;
+	
+	// change mousemode
+	if (_input.keyboard.keyStates[GLFW_KEY_LEFT_ALT] != GLFW_RELEASE) {
+		_mouseMode = MouseMode::CameraMode;
+		// set input mode to camera
+		glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		_input.mouse.move.xNow = _input.mouse.move.xOld = 0.5f * _windowWidth;
+		_input.mouse.move.yNow = _input.mouse.move.yOld = 0.5f * _windowHeight;
+		glfwSetCursorPos(_window, _input.mouse.move.xNow, _input.mouse.move.yNow);
+	}
+	if (_input.keyboard.keyStates[GLFW_KEY_RIGHT_ALT] != GLFW_RELEASE) {
+		_mouseMode = MouseMode::GUIMode;
+		glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		// GameController::firstMouse = true;
 	}
 
-	if (_input.keyboard.keyStates[GLFW_KEY_A] != GLFW_RELEASE) {
-		std::cout << "A" << std::endl;
-		// move the camera in its left direction
-		_camera->transform.position -= cameraRight * cameraMoveSpeed;
+	if(_mouseMode == MouseMode::CameraMode){
+		glm::vec3 cameraFront = _camera->transform.rotation * glm::vec3(0.0f, 0.0f, -1.0f);
+		glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::vec3 cameraRight = _camera->transform.rotation * glm::vec3(1.0f, 0.0f, 0.0f);
+
+		if (_input.keyboard.keyStates[GLFW_KEY_W] != GLFW_RELEASE) {
+			std::cout << "W" << std::endl;
+			// move the camera in its front direction
+			_camera->transform.position += cameraFront * cameraMoveSpeed;
+		}
+
+		if (_input.keyboard.keyStates[GLFW_KEY_A] != GLFW_RELEASE) {
+			std::cout << "A" << std::endl;
+			// move the camera in its left direction
+			_camera->transform.position -= cameraRight * cameraMoveSpeed;
+		}
+
+		if (_input.keyboard.keyStates[GLFW_KEY_S] != GLFW_RELEASE) {
+			std::cout << "S" << std::endl;
+			// move the camera in its back direction
+			_camera->transform.position -= cameraFront * cameraMoveSpeed;
+		}
+
+		if (_input.keyboard.keyStates[GLFW_KEY_D] != GLFW_RELEASE) {
+			std::cout << "D" << std::endl;
+			// move the camera in its right direction
+			_camera->transform.position += cameraRight * cameraMoveSpeed;
+		}
+
+		float xoffset;
+		// static float yaw = 0;
+		float yoffset;
+		// static float pitch = 0;
+		float rotateAngle;
+
+		if (_input.mouse.move.xNow != _input.mouse.move.xOld) {
+			std::cout << "mouse move in x direction" << std::endl;
+			// rotate the camera around world up: glm::vec3(0.0f, 1.0f, 0.0f)
+			xoffset = _input.mouse.move.xNow - _input.mouse.move.xOld;
+			xoffset *= cameraRotateSpeed;
+			rotateAngle = glm::radians(xoffset);
+
+			// 绝对于y轴旋转 注意是绝对的
+			_camera->transform.rotation = glm::quat(-rotateAngle * cameraUp) * _camera->transform.rotation;
+		}
+
+		if (_input.mouse.move.yNow != _input.mouse.move.yOld) {
+			std::cout << "mouse move in y direction" << std::endl;
+			// rotate the camera around its local right
+			yoffset = -_input.mouse.move.yNow + _input.mouse.move.yOld;
+			yoffset *= cameraRotateSpeed;
+			rotateAngle = glm::radians(yoffset);
+
+			_camera->transform.rotation = glm::quat(rotateAngle * cameraRight) * _camera->transform.rotation;
+		}
+
+		_input.forwardState();
 	}
 
-	if (_input.keyboard.keyStates[GLFW_KEY_S] != GLFW_RELEASE) {
-		std::cout << "S" << std::endl;
-		// move the camera in its back direction
-		_camera->transform.position -= cameraFront * cameraMoveSpeed;
-	}
-
-	if (_input.keyboard.keyStates[GLFW_KEY_D] != GLFW_RELEASE) {
-		std::cout << "D" << std::endl;
-		// move the camera in its right direction
-		_camera->transform.position += cameraRight * cameraMoveSpeed;
-	}
-
-	float xoffset;
-	// static float yaw = 0;
-	float yoffset;
-	// static float pitch = 0;
-	float rotateAngle;
-
-	if (_input.mouse.move.xNow != _input.mouse.move.xOld) {
-		std::cout << "mouse move in x direction" << std::endl;
-		// rotate the camera around world up: glm::vec3(0.0f, 1.0f, 0.0f)
-		xoffset = _input.mouse.move.xNow - _input.mouse.move.xOld;
-		xoffset *= cameraRotateSpeed;
-		rotateAngle = glm::radians(xoffset);
-
-		// 绝对于y轴旋转 注意是绝对的
-		_camera->transform.rotation = glm::quat(-rotateAngle * cameraUp) * _camera->transform.rotation;
-	}
-
-	if (_input.mouse.move.yNow != _input.mouse.move.yOld) {
-		std::cout << "mouse move in y direction" << std::endl;
-		// rotate the camera around its local right
-		yoffset = -_input.mouse.move.yNow + _input.mouse.move.yOld;
-		yoffset *= cameraRotateSpeed;
-		rotateAngle = glm::radians(yoffset);
-
-		_camera->transform.rotation = glm::quat(rotateAngle * cameraRight) * _camera->transform.rotation;
-	}
-
-	_input.forwardState();
 }
 
 void Scene::renderFrame() {

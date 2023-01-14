@@ -18,6 +18,10 @@ struct Material {
 	float ns;
 };
 
+enum class MouseMode {
+	GUIMode, CameraMode
+};
+
 class Scene : public Application {
 public:
 	Scene(const Options& options);
@@ -40,6 +44,9 @@ private:
 
 	// camera
 	std::unique_ptr<PerspectiveCamera> _camera;
+
+	// mouse
+	enum MouseMode _mouseMode = MouseMode::GUIMode;
 
 	// I = ka * albedo + kd * cos<I, n> + ks * (max(cos<R, V>, 0) ^ ns)
 	void initShader();
