@@ -4,15 +4,6 @@ project(project0)
 
 set(THIRD_PARTY_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/external)
 
-include_directories(${THIRD_PARTY_LIBRARY_PATH}/glm)
-
-include_directories(${THIRD_PARTY_LIBRARY_PATH}/glad/include)
-
-include_directories(${THIRD_PARTY_LIBRARY_PATH}/glfw/include)
-
-include_directories(${THIRD_PARTY_LIBRARY_PATH}/tinyobjloader)
-
-include_directories(${THIRD_PARTY_LIBRARY_PATH}/imgui)
 
 aux_source_directory(. PROJECT_SRC)
 
@@ -52,12 +43,16 @@ else()
 endif()
 endif()
 
+include_directories(${THIRD_PARTY_LIBRARY_PATH}/glm)
+include_directories(${THIRD_PARTY_LIBRARY_PATH}/glad/include)
+include_directories(${THIRD_PARTY_LIBRARY_PATH}/glfw/include)
+include_directories(${THIRD_PARTY_LIBRARY_PATH}/tinyobjloader)
+include_directories(${THIRD_PARTY_LIBRARY_PATH}/imgui)
+include_directories(${THIRD_PARTY_LIBRARY_PATH}/tinygltf)
+
 target_link_libraries(project0 glm)
-
 target_link_libraries(project0 glad)
-
 target_link_libraries(project0 glfw)
-
 target_link_libraries(project0 tinyobjloader)
-
 target_link_libraries(project0 imgui)
+target_link_libraries(project0 tinygltf)

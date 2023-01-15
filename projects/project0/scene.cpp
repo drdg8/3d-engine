@@ -1,10 +1,12 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <stb_image_write.h>
 
 #include "Scene.h"
 
 const std::string modelRelPath = "obj/bunny.obj";
+const std::string outputPath = "screenshot.png";
 
 Scene::Scene(const Options& options) : Application(options) {
 	// init model
@@ -186,6 +188,24 @@ void Scene::handleInput() {
 		_mouseMode = MouseMode::GUIMode;
 		glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		// GameController::firstMouse = true;
+	}
+
+	// screen shot use key_u 
+	if (_input.keyboard.keyStates[GLFW_KEY_U] != GLFW_RELEASE) {
+		std::cout << "U" << std::endl;
+
+		stbi_flip_vertically_on_write(true);
+		// choose image format
+		GLenum _format = GL_RGB;
+		int _channels = 3;
+		unsigned char *pixels = new unsigned char[_windowWidth * _windowHeight * _channels];
+		// read pixels data
+		glReadPixels(0, 0, _windowWidth, _windowHeight, _format, GL_UNSIGNED_BYTE, pixels);
+
+		// write to png
+		stbi_write_png(outputPath.c_str(), _windowWidth, _windowHeight, _channels, pixels, 0);
+
+		delete[] pixels;
 	}
 
 	if(_mouseMode == MouseMode::CameraMode){

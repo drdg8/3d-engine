@@ -9,5 +9,9 @@ cmake --build ./build --parallel 8
 ```
 
 ##### control
+
 left-alt to change to carema code
+
 right-alt to change to GUI code
+
+U to screenshot
