@@ -176,7 +176,7 @@ void Scene::handleInput() {
 	}
 	
 	// change mousemode
-	if (_input.keyboard.keyStates[GLFW_KEY_LEFT_ALT] != GLFW_RELEASE) {
+	if (_input.keyboard.keyStates[GLFW_KEY_LEFT_ALT] == GLFW_PRESS) {
 		_mouseMode = MouseMode::CameraMode;
 		// set input mode to camera
 		glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -191,7 +191,7 @@ void Scene::handleInput() {
 	}
 
 	// screen shot use key_u 
-	if (_input.keyboard.keyStates[GLFW_KEY_U] != GLFW_RELEASE) {
+	if (_input.keyboard.keyStates[GLFW_KEY_U] == GLFW_PRESS) {
 		std::cout << "U" << std::endl;
 
 		stbi_flip_vertically_on_write(true);
@@ -201,11 +201,22 @@ void Scene::handleInput() {
 		unsigned char *pixels = new unsigned char[_windowWidth * _windowHeight * _channels];
 		// read pixels data
 		glReadPixels(0, 0, _windowWidth, _windowHeight, _format, GL_UNSIGNED_BYTE, pixels);
-
 		// write to png
 		stbi_write_png(outputPath.c_str(), _windowWidth, _windowHeight, _channels, pixels, 0);
 
 		delete[] pixels;
+	}
+
+	// camera zoom
+	if (_input.keyboard.keyStates[GLFW_KEY_SPACE] == GLFW_PRESS) {
+		std::cout << "Space" << std::endl;
+		if(_camera->fovy == glm::radians(50.0f))
+			_camera->fovy = glm::radians(10.0f);
+		else
+			_camera->fovy = glm::radians(50.0f);
+
+		_input.keyboard.keyStates[GLFW_KEY_SPACE] = GLFW_RELEASE;
+		return;
 	}
 
 	if(_mouseMode == MouseMode::CameraMode){
@@ -339,12 +350,15 @@ void Scene::renderFrame() {
 
 		ImGui::Text("directional light");
 		ImGui::Separator();
+		// ImGui::InputFloat3("position##3", (float *)&_directionalLight->transform.position, "%.2f");
 		ImGui::SliderFloat("intensity##2", &_directionalLight->intensity, 0.0f, 1.0f);
 		ImGui::ColorEdit3("color##2", (float*)&_directionalLight->color);
 		ImGui::NewLine();
 
 		ImGui::Text("spot light");
 		ImGui::Separator();
+		ImGui::InputFloat3("position##3", (float *)&_spotLight->transform.position, "%.2f");
+
 		ImGui::SliderFloat("intensity##3", &_spotLight->intensity, 0.0f, 1.0f);
 		ImGui::ColorEdit3("color##3", (float*)&_spotLight->color);
 		ImGui::SliderFloat("angle##3", (float*)&_spotLight->angle, 0.0f, glm::radians(180.0f), "%f rad");

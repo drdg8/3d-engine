@@ -2,16 +2,19 @@
 
 图形学大程作业 实现一个简易的3d引擎
 
-##### build in my computer
+### build in my computer
 ```shell
 cmake -Bbuild . -G "MinGW Makefiles"
 cmake --build ./build --parallel 8
 ```
 
-##### control
+### control
 
 left-alt to change to carema code
 
 right-alt to change to GUI code
 
 U to screenshot
+
+Space to Zoom in / Zoom out
+
