@@ -29,12 +29,16 @@ set(BASE_HDR ../base/application.h
              ../base/model.h
              ../base/bounding_box.h
              ../base/vertex.h
+             ../base/cube.h
+             ../base/cone.h
              ../base/light.h)
 
 set(BASE_SRC ../base/application.cpp 
              ../base/glsl_program.cpp 
              ../base/camera.cpp 
              ../base/transform.cpp
+             ../base/cube.cpp
+             ../base/cone.cpp
              ../base/model.cpp)
 
 add_executable(project0 ${PROJECT_SRC} ${PROJECT_HDR} ${BASE_SRC} ${BASE_HDR})

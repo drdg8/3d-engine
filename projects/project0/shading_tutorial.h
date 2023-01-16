@@ -10,6 +10,8 @@
 #include "../base/model.h"
 #include "../base/light.h"
 #include "../base/camera.h"
+#include "../base/cube.h"
+#include "../base/cone.h"
 
 enum class RenderMode {
 	Ambient, Lambert, Phong
@@ -41,6 +43,8 @@ public:
 private:
 	// model
 	std::unique_ptr<Model> _bunny;
+	Cube* _cube;
+	Cone* _cone;
 
 	// materials
 	std::unique_ptr<AmbientMaterial> _ambientMaterial;

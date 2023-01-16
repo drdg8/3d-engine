@@ -4,11 +4,16 @@
 
 #include "shading_tutorial.h"
 
+#include "../base/cube.h"
+#include "../base/cone.h"
+
 const std::string modelRelPath = "obj/bunny.obj";
 
 ShadingTutorial::ShadingTutorial(const Options& options) : Application(options) {
 	// init model
-	_bunny.reset(new Model(getAssetFullPath(modelRelPath)));
+	//_cube = new Cube(glm::vec3(0,0,0),2);
+	_cone = new Cone(glm::vec3(0, 0, 0), 2, 4);
+	//_bunny.reset(new Model(modelRelPath));
 
 	// init materials
 	_ambientMaterial.reset(new AmbientMaterial);
@@ -321,7 +326,7 @@ void ShadingTutorial::renderFrame() {
 		// 1. transfer mvp matrix to the shader
 		_ambientShader->setUniformMat4("projection", _camera->getProjectionMatrix());
 		_ambientShader->setUniformMat4("view", _camera->getViewMatrix());
-		_ambientShader->setUniformMat4("model", _bunny->transform.getLocalMatrix());
+		_ambientShader->setUniformMat4("model", _cone->transform.getLocalMatrix());
 		// 2. transfer material attributes to the shader
 		_ambientShader->setUniformVec3("material.ka", _ambientMaterial->ka);
 		// 3. transfer light attributes to the shader
@@ -333,7 +338,7 @@ void ShadingTutorial::renderFrame() {
 		// 1. transfer mvp matrix to the shader
 		_lambertShader->setUniformMat4("projection", _camera->getProjectionMatrix());
 		_lambertShader->setUniformMat4("view", _camera->getViewMatrix());
-		_lambertShader->setUniformMat4("model", _bunny->transform.getLocalMatrix());
+		_lambertShader->setUniformMat4("model", _cone->transform.getLocalMatrix());
 		// 2. transfer material attributes to the shader
 		_lambertShader->setUniformVec3("material.kd", _lambertMaterial->kd);
 		// 3. transfer light attributes to the shader
@@ -354,7 +359,7 @@ void ShadingTutorial::renderFrame() {
 		// 1. transfer the mvp matrices to the shader
 		_phongShader->setUniformMat4("projection", _camera->getProjectionMatrix());
 		_phongShader->setUniformMat4("view", _camera->getViewMatrix());
-		_phongShader->setUniformMat4("model", _bunny->transform.getLocalMatrix());
+		_phongShader->setUniformMat4("model", _cone->transform.getLocalMatrix());
 		
 		// 2. TODO: transfer the camera position to the shader
 		// write your code here
@@ -396,7 +401,7 @@ void ShadingTutorial::renderFrame() {
 	}
 
 	// draw the bunny
-	_bunny->draw();
+	_cone->draw();
 
 	// draw ui elements
 	ImGui_ImplOpenGL3_NewFrame();
