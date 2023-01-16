@@ -37,49 +37,69 @@ Cube::Cube(glm::vec3 position, float a) {//a «±ﬂ≥§
     addVertex(position + glm::vec3(-a / 2, a / 2, a / 2));
     addVertex(position + glm::vec3(-a / 2, a / 2, -a / 2));
 
-    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
-    addVertex(position + glm::vec3(-a / 2, a / 2, a / 2));
-    addVertex(position + glm::vec3(-a / 2, -a / 2, a / 2));
 
     addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
-    addVertex(position + glm::vec3(a / 2, -a / 2, a / 2));
-    addVertex(position + glm::vec3(a / 2, -a / 2, -a / 2));
-
-    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
-    addVertex(position + glm::vec3(a / 2, -a / 2, a / 2));
-    addVertex(position + glm::vec3(-a / 2, -a / 2, a / 2));
-
-    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
-    addVertex(position + glm::vec3(a / 2, a / 2, -a / 2));
-    addVertex(position + glm::vec3(a / 2, -a / 2, -a / 2));
-
-    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
-    addVertex(position + glm::vec3(a / 2, a / 2, -a / 2));
-    addVertex(position + glm::vec3(-a / 2, a / 2, -a / 2));
-
-    addVertex(position + glm::vec3(a / 2, a / 2, a / 2));
     addVertex(position + glm::vec3(-a / 2, -a / 2, a / 2));
     addVertex(position + glm::vec3(-a / 2, a / 2, a / 2));
 
+
+    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
+    addVertex(position + glm::vec3(a / 2, -a / 2, -a / 2));
+    addVertex(position + glm::vec3(a / 2, -a / 2, a / 2));
+
+
+    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
+    addVertex(position + glm::vec3(a / 2, -a / 2, a / 2));
+    addVertex(position + glm::vec3(-a / 2, -a / 2, a / 2));
+
+
+
+    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
+    addVertex(position + glm::vec3(a / 2, a / 2, -a / 2));
+    addVertex(position + glm::vec3(a / 2, -a / 2, -a / 2));
+
+
+
+    addVertex(position + glm::vec3(-a / 2, -a / 2, -a / 2));
+    addVertex(position + glm::vec3(-a / 2, a / 2, -a / 2));
+    addVertex(position + glm::vec3(a / 2, a / 2, -a / 2));
+
+
+    addVertex(position + glm::vec3(a / 2, a / 2, a / 2));
+    addVertex(position + glm::vec3(-a / 2, a / 2, a / 2));
+    addVertex(position + glm::vec3(-a / 2, -a / 2, a / 2));
+
+
+
+
     addVertex(position + glm::vec3(a / 2, a / 2, a / 2));
     addVertex(position + glm::vec3(-a / 2, -a / 2, a / 2));
     addVertex(position + glm::vec3(a / 2, -a / 2, a / 2));
+
+
 
     addVertex(position + glm::vec3(a / 2, a / 2, a / 2));
     addVertex(position + glm::vec3(-a / 2, a / 2, -a / 2));
     addVertex(position + glm::vec3(-a / 2, a / 2, a / 2));
 
+
+
     addVertex(position + glm::vec3(a / 2, a / 2, a / 2));
+    addVertex(position + glm::vec3(a / 2, a / 2, -a / 2));
     addVertex(position + glm::vec3(-a / 2, a / 2, -a / 2));
-    addVertex(position + glm::vec3(a / 2, a / 2, -a / 2));
+
 
     addVertex(position + glm::vec3(a / 2, a / 2, a / 2));
-    addVertex(position + glm::vec3(a / 2, -a / 2, -a / 2));
     addVertex(position + glm::vec3(a / 2, -a / 2, a / 2));
+    addVertex(position + glm::vec3(a / 2, -a / 2, -a / 2));
+
+
 
     addVertex(position + glm::vec3(a / 2, a / 2, a / 2));
     addVertex(position + glm::vec3(a / 2, -a / 2, -a / 2));
     addVertex(position + glm::vec3(a / 2, a / 2, -a / 2));
+
+
 
 
     for (int i = 0; i < _indices.size(); i = i + 3)

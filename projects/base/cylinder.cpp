@@ -38,12 +38,14 @@ Cylinder::Cylinder(glm::vec3 position, float r, float h) {//rÎªµ×Ãæ°ë¾¶£¬hÎª¸ß
         //»­Ô²Öù²àÃæ
 
         addVertex(position + glm::vec3(r * sin(angle), 0, r * cos(angle)));
-        addVertex(position + glm::vec3(r * sin(angle), h, r * cos(angle)));
         addVertex(position + glm::vec3(r * sin(next), h, r * cos(next)));
+        addVertex(position + glm::vec3(r * sin(angle), h, r * cos(angle)));
+
 
         addVertex(position + glm::vec3(r * sin(angle), 0, r * cos(angle)));
         addVertex(position + glm::vec3(r * sin(next), 0, r * cos(next)));
         addVertex(position + glm::vec3(r * sin(next), h, r * cos(next)));
+
 
         //»­Ô²Öùµ×Ãæ
 

@@ -58,9 +58,9 @@ Sphere::Sphere(glm::vec3 position, float r) {//rΪ�뾶
 
     for (int i = 0; i < _indices.size(); i = i + 3)
     {
-        _vertices[_indices[i]].normal += calNormals(_vertices[_indices[i]].position, _vertices[_indices[i + 1]].position, _vertices[_indices[i + 2]].position);
-        _vertices[_indices[i + 1]].normal += calNormals(_vertices[_indices[i]].position, _vertices[_indices[i + 1]].position, _vertices[_indices[i + 2]].position);
-        _vertices[_indices[i + 2]].normal += calNormals(_vertices[_indices[i]].position, _vertices[_indices[i + 1]].position, _vertices[_indices[i + 2]].position);
+        _vertices[_indices[i]].normal -= calNormals(_vertices[_indices[i]].position, _vertices[_indices[i + 1]].position, _vertices[_indices[i + 2]].position);
+        _vertices[_indices[i + 1]].normal -= calNormals(_vertices[_indices[i]].position, _vertices[_indices[i + 1]].position, _vertices[_indices[i + 2]].position);
+        _vertices[_indices[i + 2]].normal -= calNormals(_vertices[_indices[i]].position, _vertices[_indices[i + 1]].position, _vertices[_indices[i + 2]].position);
 
         _vertices[_indices[i]].texCoord.x = 0.1;
         _vertices[_indices[i]].texCoord.y = 0.1;
