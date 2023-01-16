@@ -36,7 +36,7 @@ set(BASE_SRC ../base/application.cpp
              ../base/sphere.cpp
              ../base/model.cpp)
 
-add_executable(project0 ${PROJECT_SRC} ${PROJECT_HDR} ${BASE_SRC} ${BASE_HDR})
+add_executable(project0 ${PROJECT_SRC} ${PROJECT_HDR} ${BASE_SRC} ${BASE_HDR} )
 
 if(WIN32)
 set_target_properties(${PROJECT_NAME} PROPERTIES

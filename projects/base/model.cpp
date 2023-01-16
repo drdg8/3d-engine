@@ -7,6 +7,7 @@
 
 #include "model.h"
 
+
 Model::Model(const std::string& filepath) {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -60,7 +61,7 @@ Model::Model(const std::string& filepath) {
 
     _vertices = vertices;
     _indices = indices;
-    
+
     computeBoundingBox();
 
     initGLResources();
@@ -72,6 +73,13 @@ Model::Model(const std::string& filepath) {
         cleanup();
         throw std::runtime_error("OpenGL Error: " + std::to_string(error));
     }
+
+    std::string str("texture/miscellaneous/planet_Quom1200.png");
+    std::string str1("texture/miscellaneous/earthmap.jpg");
+    for (int i = 0; i < 3; i++)
+        TextureRelPath[i] = str1;
+    TextureRelPath[1] = str;
+
 }
 
 Model::Model(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices)
@@ -88,20 +96,30 @@ Model::Model(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& i
         cleanup();
         throw std::runtime_error("OpenGL Error: " + std::to_string(error));
     }
+    std::string str("texture/miscellaneous/planet_Quom1200.png");
+    std::string str1("texture/miscellaneous/earthmap.jpg");
+    for (int i = 0; i < 3; i++)
+        TextureRelPath[i] = str1;
+    TextureRelPath[1] = str;
 }
 
 Model::Model(Model&& rhs) noexcept
     : _vertices(std::move(rhs._vertices)),
-      _indices(std::move(rhs._indices)),
-      _boundingBox(std::move(rhs._boundingBox)),
-      _vao(rhs._vao), _vbo(rhs._vbo), _ebo(rhs._ebo), 
-      _boxVao(rhs._boxVao), _boxVbo(rhs._boxVbo), _boxEbo(rhs._boxEbo) {
+    _indices(std::move(rhs._indices)),
+    _boundingBox(std::move(rhs._boundingBox)),
+    _vao(rhs._vao), _vbo(rhs._vbo), _ebo(rhs._ebo),
+    _boxVao(rhs._boxVao), _boxVbo(rhs._boxVbo), _boxEbo(rhs._boxEbo) {
     _vao = 0;
     _vbo = 0;
     _ebo = 0;
     _boxVao = 0;
     _boxVbo = 0;
     _boxEbo = 0;
+    std::string str("texture/miscellaneous/planet_Quom1200.png");
+    std::string str1("texture/miscellaneous/earthmap.jpg");
+    for (int i = 0; i < 3; i++)
+        TextureRelPath[i] = str1;
+    TextureRelPath[1] = str;
 }
 
 Model::~Model() {
@@ -152,11 +170,11 @@ void Model::initGLResources() {
 
     glBindVertexArray(_vao);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, 
+    glBufferData(GL_ARRAY_BUFFER,
         sizeof(Vertex) * _vertices.size(), _vertices.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
         _indices.size() * sizeof(uint32_t), _indices.data(), GL_STATIC_DRAW);
 
     // specify layout, size of a vertex, data type, normalize, sizeof vertex array, offset of the attribute
@@ -265,4 +283,90 @@ void Model::cleanup() {
         glDeleteVertexArrays(1, &_vao);
         _vao = 0;
     }
+}
+
+const std::string Model::GetRelPath(int index) {
+    if (index < 0 || index>2)
+        index = 0;
+    std::string RelPath = TextureRelPath[index];
+    return RelPath;
+}
+
+void Model::initMaterial(std::string FullPath)
+{
+    std::shared_ptr<Texture2D> Texture =
+        std::make_shared<Texture2D>(FullPath);
+
+    _material.reset(new SingleMaterial);
+    _material->mapKd = Texture;
+}
+
+void Model::initSingleShader() {
+    _singleShader.reset(new GLSLProgram);
+    _singleShader->attachVertexShader(_vsCode);
+    _singleShader->attachFragmentShader(_fsCode);
+    _singleShader->link();
+}
+
+void Model::GPUDateTransfer(glm::mat4 projection, glm::mat4 view, glm::vec3 dir_light, glm::vec3 col_light, float int_light) {
+    // 1. use the shader
+    _singleShader->use();
+    //std::cout << "307" << std::endl;
+    // 2. transfer mvp matrices to gpu 
+    _singleShader->setUniformMat4("projection", projection);
+    //std::cout << "310" << std::endl;
+    _singleShader->setUniformMat4("view", view);
+    //std::cout << "312" << std::endl;
+    _singleShader->setUniformMat4("model", transform.getLocalMatrix());
+    //std::cout << "314" << std::endl;
+    // 3. transfer light attributes to gpu
+    _singleShader->setUniformVec3("light.direction", dir_light);
+    //std::cout << "317" << std::endl;
+    _singleShader->setUniformVec3("light.color", col_light);
+    //std::cout << "319" << std::endl;
+    _singleShader->setUniformFloat("light.intensity", int_light);
+    //std::cout << "321" << std::endl;
+    // 4. transfer materials to gpu
+    _singleShader->setUniformVec3("material.kd", _material->kd);
+    //std::cout << "325" << std::endl;
+    // 4.3 TODO: enable textures and transform textures to gpu
+    // write your code here
+    //----------------------------------------------------------------
+    glActiveTexture(GL_TEXTURE0);
+    //std::cout << "329" << std::endl;
+    _material->mapKd->bind(0);
+    //std::cout << "331" << std::endl;
+    _singleShader->setUniformInt("mapKd", 0);
+    //std::cout << "333" << std::endl;
+    //----------------------------------------------------------------
+}
+
+int Model::GetSelected()
+{
+    return _selected;
+}
+
+void Model::SetID(int id)
+{
+    _id = id;
+}
+
+void Model::SetSelected(int s)
+{
+    _selected = s;
+}
+
+/*std::unique_ptr<SingleMaterial> Model::GetMaterial() {
+    return std::move(_material);
+}
+
+int Model::GetCurTextIndex() {
+    return _cur_text_index;
+}*/
+
+void Model::UpDateTexture(std::string FullPath) {
+   std::shared_ptr<Texture2D> Texture =
+        std::make_shared<Texture2D>(FullPath);
+
+   _material->mapKd = Texture;
 }
