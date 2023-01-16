@@ -10,6 +10,10 @@
 #include "../base/model.h"
 #include "../base/light.h"
 #include "../base/camera.h"
+#include "../base/cube.h"
+#include "../base/cone.h"
+#include "../base/cylinder.h"
+#include "../base/sphere.h"
 // I = ka * Ia + sum { (kd * cos(theta[i]) + ks * cos(theta[i])^ns ) * Light[i] }
 struct Material {
 	glm::vec3 ka;
@@ -30,6 +34,10 @@ public:
 private:
 	// model
 	std::unique_ptr<Model> _bunny;
+	Cube* _cube;
+	Cone* _cone;
+	Cylinder* _cylinder;
+	Sphere* _sphere;
 
 	// materials
 	std::unique_ptr<Material> _material;

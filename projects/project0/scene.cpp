@@ -5,12 +5,16 @@
 
 #include "Scene.h"
 
-const std::string modelRelPath = "obj/bunny.obj";
+const std::string modelRelPath = "../media/obj/bunny.obj";
 const std::string outputPath = "screenshot.png";
 
 Scene::Scene(const Options& options) : Application(options) {
 	// init model
-	_bunny.reset(new Model(getAssetFullPath(modelRelPath)));
+	_bunny.reset(new Model(modelRelPath));
+	_cube = new Cube(glm::vec3(-4,0,0),1);
+	_cone = new Cone(glm::vec3(4, 0, 0), 1, 2);
+	_cylinder = new Cylinder(glm::vec3(0, 0, 4), 1, 2);
+	_sphere = new Sphere(glm::vec3(-4, 0, 4), 1.5);
 
 	// init materials
 	_material.reset(new Material);
@@ -292,6 +296,11 @@ void Scene::renderFrame() {
 	_Shader->setUniformMat4("projection", _camera->getProjectionMatrix());
 	_Shader->setUniformMat4("view", _camera->getViewMatrix());
 	_Shader->setUniformMat4("model", _bunny->transform.getLocalMatrix());
+
+	_Shader->setUniformMat4("model", _cube->transform.getLocalMatrix());
+	_Shader->setUniformMat4("model", _cone->transform.getLocalMatrix());
+	_Shader->setUniformMat4("model", _cylinder->transform.getLocalMatrix());
+	_Shader->setUniformMat4("model", _sphere->transform.getLocalMatrix());
 	
 	// 2. transfer the camera position to the shader
 	_Shader->setUniformVec3("viewPos", _camera->transform.position);
@@ -317,8 +326,12 @@ void Scene::renderFrame() {
 	_Shader->setUniformFloat("directionalLight.intensity", _directionalLight->intensity);
 	_Shader->setUniformVec3("directionalLight.color", _directionalLight->color);
 
-	// draw the bunny
+	// draw the models
 	_bunny->draw();
+	_cube->draw();
+	_cone->draw();
+	_cylinder->draw();
+	_sphere->draw();
 
 	// draw ui elements
 	ImGui_ImplOpenGL3_NewFrame();
